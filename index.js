@@ -8,18 +8,34 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://front-end-seven-gilt.vercel.app' 
+  'https://front-end-seven-gilt.vercel.app'
 ];
 
+// CORS middleware
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+}));
+
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
 
 app.use(express.json());
@@ -48,7 +64,6 @@ app.post('/api/login', (req, res) => {
 
 // Venue Routes
 app.use('/api/venues', venueRoutes);
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
