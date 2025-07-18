@@ -7,7 +7,7 @@ const session = require('express-session');
 const venueRoutes = require('./routes/venues')
 
 app.use(cors({
-  origin: 'http://localhost:3000', // your frontend URL
+  origin: 'https://front-end-seven-gilt.vercel.app/', // your frontend URL
   credentials: true
 }));
 
