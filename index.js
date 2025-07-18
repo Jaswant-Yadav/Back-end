@@ -8,7 +8,7 @@ const venueRoutes = require('./routes/venues')
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://front-end-seven-gilt.vercel.app/', // your deployed frontend
+  'https://front-end-seven-gilt.vercel.app', // your deployed frontend
 ];
 
 app.use(cors({
