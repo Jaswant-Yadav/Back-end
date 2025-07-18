@@ -6,8 +6,13 @@ const session = require('express-session');
 
 const venueRoutes = require('./routes/venues')
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://front-end-seven-gilt.vercel.app/', // your deployed frontend
+];
+
 app.use(cors({
-  origin: 'https://front-end-seven-gilt.vercel.app/', // your frontend URL
+  origin: allowedOrigins,
   credentials: true
 }));
 
