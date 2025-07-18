@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Venue = require('../models/venue');
 const Booking = require('../models/booking');
-const venue = require('../models/venue');
 
 // Fetch all venues
 router.get('/', async (req, res) => {
@@ -27,7 +26,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to add venue', details: err.message });
   }
 });
-
 
 // Block a date for a venue
 router.post('/:id/block', async (req, res) => {
@@ -63,12 +61,17 @@ router.post('/:id/book', async (req, res) => {
   res.json({ success: true, booking });
 });
 
-router.delete('/delete/:id', async (req, resp) => {
-    const result = await venue.deleteOne({ _id: req.params.id })
-    resp.send(result);
+// ✅ Updated DELETE route to use standard REST format
+router.delete('/:id', async (req, res) => {
+  try {
+    const result = await Venue.deleteOne({ _id: req.params.id });
+    res.send(result);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete venue', details: err.message });
+  }
 });
 
-// PUT venues availability
+// Update venue availability
 router.put('/:id/availability', async (req, res) => {
   const { id } = req.params;
   const { date } = req.body;
@@ -87,6 +90,5 @@ router.put('/:id/availability', async (req, res) => {
     res.status(500).json({ error: "Failed to update availability" });
   }
 });
-
 
 module.exports = router;
