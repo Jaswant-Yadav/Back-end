@@ -23,9 +23,11 @@ router.post('/', async (req, res) => {
     await venue.save();
     res.status(201).json(venue);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to add venue' });
+    console.error('Error adding venue:', err);
+    res.status(500).json({ error: 'Failed to add venue', details: err.message });
   }
 });
+
 
 // Block a date for a venue
 router.post('/:id/block', async (req, res) => {
