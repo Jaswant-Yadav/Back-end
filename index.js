@@ -8,32 +8,18 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://front-end-seven-gilt.vercel.app'
+  'https://front-end-seven-gilt.vercel.app' // NO trailing slash!
 ];
 
-// CORS middleware
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
-}));
-
-app.options('*', cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  credentials: true
 }));
 
 app.use(express.json());
@@ -60,22 +46,9 @@ app.post('/api/login', (req, res) => {
   res.json({ role: user.role });
 });
 
-// ✅ Wrap route mount in try-catch
-try {
-  app.use('/api/venues', venueRoutes);
-} catch (err) {
-  console.error("❌ Error mounting /api/venues routes:", err);
-}
+// Venue Routes
+app.use('/api/venues', venueRoutes);
 
-// ✅ Debug: Print all registered routes
-setTimeout(() => {
-  console.log("\n📋 Registered Routes:");
-  app._router.stack
-    .filter(r => r.route)
-    .forEach(r => {
-      console.log(`➡️  ${Object.keys(r.route.methods).join(', ').toUpperCase()} ${r.route.path}`);
-    });
-}, 500); // Delay a bit so all routes are loaded
-
+// ✅ Use dynamic port for deployment (Render needs this)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
